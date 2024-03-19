@@ -31,21 +31,7 @@
      <widget class="QWidget" name="main" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QTabWidget" name="quickStart">
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="tab1">
-          <attribute name="title">
-           <string>Tab 1</string>
-          </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QListView" name="list"/>
-           </item>
-          </layout>
-         </widget>
-        </widget>
+        <widget class="QListWidget" name="list"/>
        </item>
       </layout>
      </widget>

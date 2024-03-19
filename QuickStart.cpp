@@ -1,36 +1,42 @@
 #include "QuickStart.h"
-#include "qfile.h"
-#include "qtextstream.h"
+#include "qstringconverter.h"
 
 bool QuickStart::load(const std::string &path)
 {
 	QFile file(path.c_str());
+	QTextStream in(&file);
+	in.setEncoding(QStringConverter::Encoding::Utf8);
+
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
-	QTextStream in(&file);
-	in.setAutoDetectUnicode(true);
-	QString all = in.readAll();
 
-	file.close();
+	while (!in.atEnd())
+	{
+		QString line = in.readLine(); // name:path
+		int index = line.indexOf(',');
+		files.push_back(std::make_pair(line.left(index).toStdString(), line.mid(index + 1).toStdString()));
+	}
 
-	QJsonParseError err;
-	doc = QJsonDocument::fromJson(all.toUtf8(), &err);
-	if (err.error != QJsonParseError::NoError and !doc.isNull())
-		return false;
-
-	QJsonObject root = doc.object();
-	QJsonValue nameValue = root.value("name");
-	QJsonValue pathValue = root.value("path");
+	return true;
 }
 
 bool QuickStart::save(const std::string &path)
 {
+	QFile file(path.c_str());
+	QTextStream out(&file);
+
+	if (!file.open(QIODevice::WriteOnly))
+		return false;
+
+	for (auto &file : files)
+		out << QString::fromStdString(file.first) << ',' << QString::fromStdString(file.second) << '\n';
+
 	return true;
 }
 
 std::vector<std::pair<std::string, std::string>> &QuickStart::getFiles()
 {
-	return;
+	return files;
 }
 
 void QuickStart::addFile(const std::string &name, const std::string &path)

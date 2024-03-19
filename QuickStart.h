@@ -1,13 +1,10 @@
 #pragma once
 
-#include "qjsonobject.h"
-#include "qjsondocument.h"
-#include "qjsonarray.h"
-#include "qjsonvalue.h"
+#include "qfile.h"
+#include "qtextstream.h"
 
 class QuickStart
 {
-	QJsonDocument doc;
 	std::vector<std::pair<std::string, std::string>> files;
 
 public:
