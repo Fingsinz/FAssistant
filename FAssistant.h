@@ -16,6 +16,7 @@ public:
 
 	void makeConnection();
 	void loadPaths();
+	inline void reload();
 
 private:
 	Ui::FAssistantClass ui;

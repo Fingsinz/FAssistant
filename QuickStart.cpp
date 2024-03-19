@@ -3,6 +3,9 @@
 
 bool QuickStart::load(const std::string &path)
 {
+	files.clear();
+	std::vector<std::pair<std::string, std::string>>().swap(files);
+
 	QFile file(path.c_str());
 	QTextStream in(&file);
 	in.setEncoding(QStringConverter::Encoding::Utf8);
@@ -42,4 +45,32 @@ std::vector<std::pair<std::string, std::string>> &QuickStart::getFiles()
 void QuickStart::addFile(const std::string &name, const std::string &path)
 {
 	files.push_back(std::make_pair(name, path));
+}
+
+void QuickStart::modifyFile(const std::string &oldName, const std::string &newName,
+	const std::string &newPath)
+{
+	for (auto &file : files)
+	{
+		if (file.first == oldName)
+		{
+			if (newName != "")
+				file.first = newName;
+			if (newPath != "")
+				file.second = newPath;
+			return;
+		}
+	}
+}
+
+void QuickStart::removeFile(const std::string &name)
+{
+	for (auto it = files.begin(); it != files.end(); it++)
+	{
+		if (it->first == name)
+		{
+			files.erase(it);
+			return;
+		}
+	}
 }

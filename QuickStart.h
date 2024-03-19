@@ -16,4 +16,9 @@ public:
 	std::vector<std::pair<std::string, std::string>> &getFiles();
 
 	void addFile(const std::string &name, const std::string &path);
+
+	void modifyFile(const std::string &oldName, const std::string &newName = "",
+		const std::string &newPath = "");
+
+	void removeFile(const std::string &name);
 };
