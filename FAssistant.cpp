@@ -75,7 +75,38 @@ void FAssistant::makeConnection()
 
 		else
 		{
-			popMenu->addAction("添加条目", this, [&] {});
+			popMenu->addAction("添加条目", this, [&] {
+				//QListWidgetItem *curItem = new QListWidgetItem;
+				//ui.list->addItem(curItem);
+				QDialog dialog;
+				dialog.setWindowTitle("添加条目");
+
+				QFormLayout layout(&dialog);
+				QString inputName = "请输入名字：";
+				QString inputPath = "请输入路径：";
+				QLineEdit inputNameEdit;
+				QLineEdit inputPathEdit;
+				QPushButton pathButton("浏览", &dialog);
+				connect(&pathButton, &QPushButton::clicked, &dialog,
+					[this, &inputPathEdit] {
+						QString path = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择路径"), "", tr("*.*"));
+						inputPathEdit.setText(path);
+					});
+				QFormLayout selectPath(&dialog);
+				selectPath.addRow(&inputPathEdit, &pathButton);
+				layout.addRow(inputName, &inputNameEdit);
+				layout.addRow(inputPath, &selectPath);
+
+				QDialogButtonBox buttonBox;
+				buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+				QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+				QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+				layout.addRow(&buttonBox);
+
+				if (dialog.exec() == QDialog::Rejected)	return;
+				quickStart.addFile(inputNameEdit.text().toStdString(), inputPathEdit.text().toStdString());
+				reload();
+				});
 		}
 
 		popMenu->addAction("导入条目", this, [&] {
