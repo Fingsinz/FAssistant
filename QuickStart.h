@@ -5,9 +5,14 @@
 
 class QuickStart
 {
+	std::string recordPath;
 	std::vector<std::pair<std::string, std::string>> files;
 
 public:
+
+	void setRecordPath(const std::string &path);
+
+	std::string getRecordPath();
 
 	bool load(const std::string &path);
 

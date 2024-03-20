@@ -1,6 +1,16 @@
 #include "QuickStart.h"
 #include "qstringconverter.h"
 
+void QuickStart::setRecordPath(std::string const &path)
+{
+	recordPath = path;
+}
+
+std::string QuickStart::getRecordPath()
+{
+	return recordPath;
+}
+
 bool QuickStart::load(const std::string &path)
 {
 	files.clear();

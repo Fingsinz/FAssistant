@@ -2,7 +2,7 @@
 #pragma execution_character_set("utf-8")
 
 #include <QtWidgets/QMainWindow>
-#include "qdesktopservices.h"
+#include "qevent.h"
 #include "qlistwidget.h"
 #include "ui_FAssistant.h"
 
@@ -15,6 +15,7 @@ public:
 	~FAssistant();
 
 	void makeConnection();
+	void closeEvent(QCloseEvent *event);
 	void loadPaths();
 	inline void reload();
 

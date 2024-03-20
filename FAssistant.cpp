@@ -2,6 +2,7 @@
 #include "qdesktopservices.h"
 #include "qdialogbuttonbox.h"
 #include "qdir.h"
+#include "qdiriterator.h"
 #include "qfiledialog.h"
 #include "qformlayout.h"
 #include "qlineedit.h"
@@ -95,14 +96,32 @@ void FAssistant::makeConnection()
 		});
 }
 
+void FAssistant::closeEvent(QCloseEvent *event)
+{
+	quickStart.save(quickStart.getRecordPath());
+}
+
 void FAssistant::loadPaths()
 {
+	QString fappsPath;
 	QDir dir;
-	ui.clipBoard->append(dir.path());
-	for (auto &file : dir.entryList(QStringList() << "*.fapps", QDir::Files))
-		ui.clipBoard->append(dir.absoluteFilePath(file));
+	dir.setNameFilters(QStringList() << "*.fapps");
 
-	if (!quickStart.load("test.fapps"))
+	QDirIterator iter(dir, QDirIterator::NoIteratorFlags);
+	while (iter.hasNext())
+	{
+		iter.next();
+		QFileInfo info = iter.fileInfo();
+		if (info.isFile())
+		{
+			fappsPath = info.absoluteFilePath();
+			ui.statusBar->showMessage(fappsPath);
+			break;
+		}
+	}
+	quickStart.setRecordPath(fappsPath.toStdString());
+
+	if (!quickStart.load(fappsPath.toStdString()))
 		return;
 
 	ui.list->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
