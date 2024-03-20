@@ -7,6 +7,7 @@
 #include "qlineedit.h"
 #include "qlistwidget.h"
 #include "qmessagebox.h"
+#include "qpushbutton.h"
 #include "QuickStart.h"
 
 extern QuickStart quickStart;
@@ -45,10 +46,18 @@ void FAssistant::makeConnection()
 				QString inputPath = "请输入路径：";
 				QLineEdit inputNameEdit;
 				QLineEdit inputPathEdit;
+				QPushButton pathButton("浏览", &dialog);
+				connect(&pathButton, &QPushButton::clicked, &dialog,
+					[this, &inputPathEdit] {
+						QString path = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择路径"), "", tr("*.*"));
+						inputPathEdit.setText(path);
+					});
 				inputNameEdit.setText(curItem->text());
 				inputPathEdit.setText(curItem->toolTip());
+				QFormLayout selectPath(&dialog);
+				selectPath.addRow(&inputPathEdit, &pathButton);
 				layout.addRow(inputName, &inputNameEdit);
-				layout.addRow(inputPath, &inputPathEdit);
+				layout.addRow(inputPath, &selectPath);
 
 				QDialogButtonBox buttonBox;
 				buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
