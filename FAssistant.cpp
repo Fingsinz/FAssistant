@@ -135,7 +135,20 @@ void FAssistant::closeEvent(QCloseEvent *event)
 {
 	QDialog dialog;
 	dialog.setWindowTitle("关闭");
+	QFormLayout layout(&dialog);
+
 	QString tips = "是否保存当前条目记录？";
+	QLabel label(tips);
+
+	QDialogButtonBox buttonBox;
+	buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+	QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+	layout.addRow(&label);
+	layout.addRow(&buttonBox);
+
+	if (dialog.exec() == QDialog::Rejected)	return;
 
 	quickStart.save(quickStart.getRecordPath());
 }
