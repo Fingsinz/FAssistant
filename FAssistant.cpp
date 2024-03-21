@@ -138,6 +138,8 @@ void FAssistant::makeConnection()
 
 void FAssistant::closeEvent(QCloseEvent *event)
 {
+	if (quickStart.getFiles().size() == 0) return;
+
 	QDialog dialog;
 	dialog.setWindowTitle("关闭");
 	QFormLayout layout(&dialog);
