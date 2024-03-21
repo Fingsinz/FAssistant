@@ -30,7 +30,7 @@ void FAssistant::makeConnection()
 {
 	// 绑定双击打开
 	connect(ui.list, &QListWidget::itemDoubleClicked, [this] (QListWidgetItem *item) {
-		QDesktopServices::openUrl(QUrl(item->data(Qt::UserRole).toString()));
+		QDesktopServices::openUrl(QUrl::fromLocalFile(item->toolTip()));
 		});
 
 	connect(ui.list, &QListWidget::customContextMenuRequested, [this] (const QPoint &pos) {
