@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="FAssistant">
+    <qresource prefix="/FAssistant"/>
+    <qresource prefix="/image">
+        <file>logo.jpg</file>
     </qresource>
 </RCC>

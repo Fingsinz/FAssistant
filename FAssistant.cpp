@@ -17,6 +17,7 @@ FAssistant::FAssistant(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	setWindowIcon(QIcon(":/image/logo.jpg"));
 	ui.list->setContextMenuPolicy(Qt::CustomContextMenu);
 	loadPaths();
 	makeConnection();
@@ -65,6 +66,8 @@ void FAssistant::makeConnection()
 				buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 				QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
 				QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+				buttonBox.button(QDialogButtonBox::Ok)->setText("修改");
+				buttonBox.button(QDialogButtonBox::Cancel)->setText("取消");
 				layout.addRow(&buttonBox);
 
 				if (dialog.exec() == QDialog::Rejected)	return;
@@ -102,6 +105,8 @@ void FAssistant::makeConnection()
 			buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 			QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
 			QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+			buttonBox.button(QDialogButtonBox::Ok)->setText("添加");
+			buttonBox.button(QDialogButtonBox::Cancel)->setText("取消");
 			layout.addRow(&buttonBox);
 
 			if (dialog.exec() == QDialog::Rejected)	return;
@@ -144,13 +149,13 @@ void FAssistant::closeEvent(QCloseEvent *event)
 	buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
 	QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+	buttonBox.button(QDialogButtonBox::Ok)->setText("保存");
+	buttonBox.button(QDialogButtonBox::Cancel)->setText("不保存");
 
 	layout.addRow(&label);
 	layout.addRow(&buttonBox);
 
-	if (dialog.exec() == QDialog::Rejected)	return;
-
-	quickStart.save(quickStart.getRecordPath());
+	if (dialog.exec() == QDialog::Accepted)	quickStart.save(quickStart.getRecordPath());
 }
 
 void FAssistant::loadPaths()
