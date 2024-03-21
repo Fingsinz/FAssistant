@@ -49,9 +49,10 @@ void FAssistant::makeConnection()
 				QLineEdit inputPathEdit;
 				QPushButton pathButton("浏览", &dialog);
 				connect(&pathButton, &QPushButton::clicked, &dialog,
-					[this, &inputPathEdit] {
+					[this, &inputPathEdit, &inputNameEdit] {
 						QString path = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择路径"), "", tr("*.*"));
 						inputPathEdit.setText(path);
+						inputNameEdit.setText(path.section('/', -1, -1));
 					});
 				inputNameEdit.setText(curItem->text());
 				inputPathEdit.setText(curItem->toolTip());
@@ -70,55 +71,58 @@ void FAssistant::makeConnection()
 				quickStart.modifyFile(curItem->text().toStdString(), inputNameEdit.text().toStdString(), inputPathEdit.text().toStdString());
 				reload();
 				});
-			popMenu->addAction("删除条目", this, [&] {});
-		}
-
-		else
-		{
-			popMenu->addAction("添加条目", this, [&] {
-				//QListWidgetItem *curItem = new QListWidgetItem;
-				//ui.list->addItem(curItem);
-				QDialog dialog;
-				dialog.setWindowTitle("添加条目");
-
-				QFormLayout layout(&dialog);
-				QString inputName = "请输入名字：";
-				QString inputPath = "请输入路径：";
-				QLineEdit inputNameEdit;
-				QLineEdit inputPathEdit;
-				QPushButton pathButton("浏览", &dialog);
-				connect(&pathButton, &QPushButton::clicked, &dialog,
-					[this, &inputPathEdit] {
-						QString path = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择路径"), "", tr("*.*"));
-						inputPathEdit.setText(path);
-					});
-				QFormLayout selectPath(&dialog);
-				selectPath.addRow(&inputPathEdit, &pathButton);
-				layout.addRow(inputName, &inputNameEdit);
-				layout.addRow(inputPath, &selectPath);
-
-				QDialogButtonBox buttonBox;
-				buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-				QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
-				QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-				layout.addRow(&buttonBox);
-
-				if (dialog.exec() == QDialog::Rejected)	return;
-				quickStart.addFile(inputNameEdit.text().toStdString(), inputPathEdit.text().toStdString());
+			popMenu->addAction("删除条目", this, [&] {
+				quickStart.removeFile(curItem->text().toStdString());
 				reload();
 				});
 		}
 
+		popMenu->addAction("添加条目", this, [&] {
+			QDialog dialog;
+			dialog.setWindowTitle("添加条目");
+
+			QFormLayout layout(&dialog);
+			QString inputName = "请输入名字：";
+			QString inputPath = "请输入路径：";
+			QLineEdit inputNameEdit;
+			QLineEdit inputPathEdit;
+			QPushButton pathButton("浏览", &dialog);
+			connect(&pathButton, &QPushButton::clicked, &dialog,
+				[this, &inputPathEdit, &inputNameEdit] {
+					QString path = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择路径"), "", tr("*.*"));
+					inputPathEdit.setText(path);
+					inputNameEdit.setText(path.section('/', -1, -1));
+				});
+			QFormLayout selectPath(&dialog);
+			selectPath.addRow(&inputPathEdit, &pathButton);
+			layout.addRow(inputName, &inputNameEdit);
+			layout.addRow(inputPath, &selectPath);
+
+			QDialogButtonBox buttonBox;
+			buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+			QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+			QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+			layout.addRow(&buttonBox);
+
+			if (dialog.exec() == QDialog::Rejected)	return;
+			quickStart.addFile(inputNameEdit.text().toStdString(), inputPathEdit.text().toStdString());
+			reload();
+			});
+
 		popMenu->addAction("导入条目", this, [&] {
 			QString fileName =
 				QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择记录文件"), "", tr("*.fapps"));
+			if (fileName.isEmpty()) return;
 			quickStart.load(fileName.toStdString());
+			quickStart.setRecordPath(fileName.toStdString());
+			ui.statusBar->showMessage(fileName);
 			reload();
 			});
 
 		popMenu->addAction("导出条目", this, [&] {
 			QString fileName =
 				QFileDialog::getSaveFileName(this, QString::fromLocal8Bit("保存记录文件"), "", tr("*.fapps"));
+			if (fileName.isEmpty()) return;
 			quickStart.save(fileName.toStdString());
 			});
 
@@ -129,6 +133,10 @@ void FAssistant::makeConnection()
 
 void FAssistant::closeEvent(QCloseEvent *event)
 {
+	QDialog dialog;
+	dialog.setWindowTitle("关闭");
+	QString tips = "是否保存当前条目记录？";
+
 	quickStart.save(quickStart.getRecordPath());
 }
 
