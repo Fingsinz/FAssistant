@@ -178,6 +178,16 @@ void FAssistant::loadPaths()
 			break;
 		}
 	}
+
+	if (fappsPath.isEmpty())
+	{
+		fappsPath = QDir::currentPath() + "/default.fapps";
+		ui.statusBar->showMessage(fappsPath);
+		QFile file(fappsPath);
+		file.open(QFile::WriteOnly);
+		file.close();
+	}
+
 	quickStart.setRecordPath(fappsPath.toStdString());
 
 	if (!quickStart.load(fappsPath.toStdString()))
