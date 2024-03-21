@@ -40,7 +40,7 @@ void FAssistant::makeConnection()
 		if (curItem != nullptr)
 		{
 			popMenu->addAction("修改条目", this, [&] {
-				QDialog dialog;
+				QDialog dialog(this);
 				dialog.setWindowTitle("修改条目");
 
 				QFormLayout layout(&dialog);
