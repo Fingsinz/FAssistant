@@ -81,7 +81,7 @@ void FAssistant::makeConnection()
 		}
 
 		popMenu->addAction("添加条目", this, [&] {
-			QDialog dialog;
+			QDialog dialog(this);
 			dialog.setWindowTitle("添加条目");
 
 			QFormLayout layout(&dialog);
@@ -140,7 +140,7 @@ void FAssistant::closeEvent(QCloseEvent *event)
 {
 	if (quickStart.getFiles().size() == 0) return;
 
-	QDialog dialog;
+	QDialog dialog(this);
 	dialog.setWindowTitle("关闭");
 	QFormLayout layout(&dialog);
 
